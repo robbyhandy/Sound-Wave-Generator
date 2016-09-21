@@ -31,10 +31,10 @@ public class DisplayPanel extends JPanel {
 		data = new Path2D.Float();
 	}
 	
-	public void drawGraphics(float[] values) {
+	public void drawGraphics(double[] values) {
 		data.reset();
 		data.moveTo(0, (float) image.getHeight() / 2);
-		float maxAmplitude = 0;
+		double maxAmplitude = 0;
 		for(int i = 0; i < values.length; i++) {
 			if(Math.abs(values[i]) > maxAmplitude) {
 				maxAmplitude = Math.abs(values[i]);

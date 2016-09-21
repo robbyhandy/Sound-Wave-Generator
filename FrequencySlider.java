@@ -12,14 +12,16 @@ public class FrequencySlider extends JSlider {
 		this.setMinimum(100);
 		this.setMaximum(2000);
 		this.setValue(200);
-		this.setPreferredSize(new Dimension(200, 10));
+		this.setPreferredSize(new Dimension(200, 20));
 		
 		this.addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				// TODO Auto-generated method stub
-				
+				int val = ((FrequencySlider)e.getSource()).getValue();
+				sliderValLabel.setText(String.valueOf(val));
+				SineWave.setFreq(val);
+				Vibrato.calculateAllSineVals();
 			}
 			
 		});
