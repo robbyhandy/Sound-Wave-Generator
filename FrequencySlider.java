@@ -9,9 +9,9 @@ import javax.swing.event.ChangeListener;
 public class FrequencySlider extends JSlider {
 	
 	public FrequencySlider(JLabel sliderValLabel) {
-		this.setMinimum(100);
+		this.setMinimum(0);
 		this.setMaximum(2000);
-		this.setValue(200);
+		this.setValue(220);
 		this.setPreferredSize(new Dimension(200, 20));
 		
 		this.addChangeListener(new ChangeListener() {

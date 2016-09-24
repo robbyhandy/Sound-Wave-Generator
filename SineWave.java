@@ -25,13 +25,22 @@ public class SineWave {
 		calcSineVals();
 	}
 	
-	public double[] calcSineVals() {
+	public void calcSineVals() {
+		System.out.println("FREQ: " + FREQ);
+		System.out.println("VIBRATO_AMP: " + VIBRATO_AMP);
+		System.out.println("VIBRATO_FREQ: " + VIBRATO_FREQ);
+		System.out.println("TREMOLO_AMP: " + TREMOLO_AMP);
+		System.out.println("TREMOLO_FREQ: " + TREMOLO_FREQ);
+		System.out.println("wavePhase: " + wavePhase);
+		System.out.println("harmonicNum: " + harmonicNum);
+		System.out.println("harmonicAmp: " + harmonicAmp);
+
 		for(int i = 0; i < NUM_SINE_POINTS; i++) {
-			sineVals[i] = (1 - TREMOLO_AMP * Math.sin(2 * Math.PI * TREMOLO_FREQ * i)) * 
-							(harmonicAmp * Math.sin(2 * Math.PI * harmonicNum * i + 
-									(VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ * i + vibratoPhase)) + wavePhase));
+			sineVals[i] = 10 * (1 - TREMOLO_AMP * Math.sin(2 * Math.PI * TREMOLO_FREQ * i / NUM_SINE_POINTS * 2)) * 
+							(harmonicAmp * Math.sin(2 * Math.PI * harmonicNum * i * 2 / NUM_SINE_POINTS  + 
+									(VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ * i * 2 + vibratoPhase)) + wavePhase));
 		}
-		return sineVals;
+		Vibrato.calcFinalSineVals();
 	}
 	
 	public double[] getSineVals() {
