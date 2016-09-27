@@ -13,6 +13,7 @@ public class FrequencySlider extends JSlider {
 		this.setMaximum(2000);
 		this.setValue(220);
 		this.setPreferredSize(new Dimension(200, 20));
+		sliderValLabel.setText(String.valueOf(this.getValue()));
 		
 		this.addChangeListener(new ChangeListener() {
 

@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 
 public class Vibrato extends JFrame implements Runnable {
 	
-	private static final int NUM_WAVES = 2;
+	private static final int NUM_WAVES = 7;
 	private static SineWave[] sineWaves;
 	
 	private static volatile double[] finalSineValsSound;
@@ -33,7 +33,7 @@ public class Vibrato extends JFrame implements Runnable {
 		for(int i = 0; i < sineWaves.length; i++) {
 			sineWaves[i] = new SineWave(i + 1);
 		}
-		finalSineValsSound = new double[SineWave.NUM_SINE_POINTS];
+		finalSineValsSound = new double[(int) (SineWave.NUM_SINE_POINTS * SineWave.BUFFER_DURATION)];
 		finalSineValsPicture = new double[SineWave.NUM_SINE_POINTS];
 		soundGenerator = new SoundGenerator(sineWaves);
 		Container contentPane = this.getContentPane();
@@ -74,7 +74,7 @@ public class Vibrato extends JFrame implements Runnable {
 	
 	public static void calcFinalSineVals() {
 		if(finalSineValsSound != null && finalSineValsPicture != null) {
-			finalSineValsSound = new double[SineWave.SAMPLE_RATE];
+			finalSineValsSound = new double[(int) (SineWave.SAMPLE_RATE * SineWave.BUFFER_DURATION)];
 			finalSineValsPicture = new double[SineWave.NUM_SINE_POINTS];
 			for(int i = 0; i < sineWaves.length; i++) {
 				double[] valsSound = sineWaves[i].getSineValsSound();

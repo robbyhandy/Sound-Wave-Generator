@@ -16,7 +16,7 @@ public class DisplayPanel extends JPanel {
 	
 	public DisplayPanel() {
 		super();
-		this.setPreferredSize(new Dimension(400, 100));
+		this.setPreferredSize(new Dimension(400, 2000));
 	}
 	
 	public void drawWave(double[] values) {

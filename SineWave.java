@@ -4,11 +4,12 @@ public class SineWave {
 
 	public static final int NUM_SINE_POINTS = 1000;
 	public static final int SAMPLE_RATE = 44100;
+	public static final double BUFFER_DURATION = .500;
 	private static final double DT =  1.0 / SAMPLE_RATE;
 	
-	private static double FREQ = 100;
-	private static double VIBRATO_AMP = 1.0;
-	private static double VIBRATO_FREQ = 1.0;
+	private static double FREQ = 220;
+	private static double VIBRATO_AMP = 0.0;
+	private static double VIBRATO_FREQ = 0.0;
 	private static double TREMOLO_AMP = 0.0;
 	private static double TREMOLO_FREQ = 0.0;
 	
@@ -20,7 +21,7 @@ public class SineWave {
 	private double[] sineValsPicture;
 
 	public SineWave(double harmonicNum) {
-		sineValsSound = new double[SAMPLE_RATE];
+		sineValsSound = new double[(int) (SAMPLE_RATE * BUFFER_DURATION)];
 		sineValsPicture = new double[NUM_SINE_POINTS];
 		harmonicAmp = 1.0;
 		wavePhase = 0.0;
@@ -47,12 +48,12 @@ public class SineWave {
 //		}
 		
 		for(int i = 0; i < NUM_SINE_POINTS; i++) {
-			sineValsPicture[i] = 20 * (1 - TREMOLO_AMP * Math.sin(2 * Math.PI * TREMOLO_FREQ * i / NUM_SINE_POINTS)) * harmonicAmp * Math.sin(2 * Math.PI * 2 * harmonicNum * i / NUM_SINE_POINTS + wavePhase + (VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ * i / NUM_SINE_POINTS + vibratoPhase)));
+			sineValsPicture[i] = 18 * (1 - TREMOLO_AMP * Math.sin(2 * Math.PI * TREMOLO_FREQ * i / NUM_SINE_POINTS)) * harmonicAmp * Math.sin(2 * Math.PI * 2 * harmonicNum * i / NUM_SINE_POINTS + wavePhase + (VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ * i / NUM_SINE_POINTS + vibratoPhase)));
 //			System.out.println(sineVals[i]);
 		}
-		for(int i = 0; i < SAMPLE_RATE; i++) {
-			sineValsSound[i] = Short.MAX_VALUE * Math.sin(2 * Math.PI * 440 * i / 44100);
-//			sineValsSound[i] = 20 * (1 - TREMOLO_AMP * Math.sin(2 * Math.PI * TREMOLO_FREQ * i / SAMPLE_RATE)) * harmonicAmp * Math.sin(2 * Math.PI * 2 * harmonicNum * FREQ * i / SAMPLE_RATE + wavePhase + (VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ * i / SAMPLE_RATE + vibratoPhase)));
+		for(int i = 0; i < sineValsSound.length; i++) {
+//			sineValsSound[i] = 1.0 / 70 / 4 *Short.MAX_VALUE * (Math.sin(2 * Math.PI * 440 * i / 44100) + Math.sin(2 * Math.PI * 440 * 2 * i / 44100));
+			sineValsSound[i] = (1 - TREMOLO_AMP * Math.sin(2 * Math.PI * TREMOLO_FREQ * i / sineValsSound.length)) * harmonicAmp * Math.sin(2 * Math.PI * harmonicNum * FREQ * i / sineValsSound.length + wavePhase + (VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ * i / sineValsSound.length + vibratoPhase)));
 		}
 
 		Vibrato.calcFinalSineVals();
