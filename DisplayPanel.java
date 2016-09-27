@@ -20,16 +20,10 @@ public class DisplayPanel extends JPanel {
 	}
 	
 	public void drawWave(double[] values) {
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		this.values = values;
-		for(int i = 0; i < values.length; i ++) {
-			System.out.println(values[i]);
-		}
+//		for(int i = 0; i < values.length; i ++) {
+//			System.out.println(values[i]);
+//		}
 		this.repaint();
 	}
 	

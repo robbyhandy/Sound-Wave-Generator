@@ -2,31 +2,40 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.sound.sampled.LineUnavailableException;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Vibrato extends JFrame implements Runnable {
 	
-	private static final int NUM_WAVES = 7;
+	private static final int NUM_WAVES = 2;
 	private static SineWave[] sineWaves;
 	
-	private static volatile double[] finalSineVals;
-	
+	private static volatile double[] finalSineValsSound;
+	private static volatile double[] finalSineValsPicture;
+
 	private static boolean dataChanged;
 	private static DisplayPanel disp;
 	
+	private static SoundGenerator soundGenerator;
+	
 
-	public Vibrato() {
+	public Vibrato() throws LineUnavailableException {
 		dataChanged = false;
 		sineWaves = new SineWave[NUM_WAVES];
 		for(int i = 0; i < sineWaves.length; i++) {
-			sineWaves[i] = new SineWave(i);
+			sineWaves[i] = new SineWave(i + 1);
 		}
-		finalSineVals = new double[SineWave.NUM_SINE_POINTS];
+		finalSineValsSound = new double[SineWave.NUM_SINE_POINTS];
+		finalSineValsPicture = new double[SineWave.NUM_SINE_POINTS];
+		soundGenerator = new SoundGenerator(sineWaves);
 		Container contentPane = this.getContentPane();
 		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
 		JPanel slidersPanel = setupSliders();
@@ -38,6 +47,7 @@ public class Vibrato extends JFrame implements Runnable {
 		this.pack();
 		this.setVisible(true);
 		calculateAllSineVals();
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 	
 	public static void redrawWave() {
@@ -45,7 +55,7 @@ public class Vibrato extends JFrame implements Runnable {
 			
 			@Override
 			public void run() {
-				disp.drawWave(finalSineVals);
+				disp.drawWave(finalSineValsPicture);
 			}
 		};
 		thread.start();
@@ -63,18 +73,41 @@ public class Vibrato extends JFrame implements Runnable {
 	}
 	
 	public static void calcFinalSineVals() {
-		if(finalSineVals != null) {
-			finalSineVals = new double[SineWave.NUM_SINE_POINTS];
-			System.out.println("Should be zero" + finalSineVals[44]);
+		if(finalSineValsSound != null && finalSineValsPicture != null) {
+			finalSineValsSound = new double[SineWave.SAMPLE_RATE];
+			finalSineValsPicture = new double[SineWave.NUM_SINE_POINTS];
 			for(int i = 0; i < sineWaves.length; i++) {
-				double[] vals = sineWaves[i].getSineVals();
-				for(int j = 0; j < finalSineVals.length; j++) {
-					finalSineVals[j] += (vals[j]);
+				double[] valsSound = sineWaves[i].getSineValsSound();
+				double[] valsPicture = sineWaves[i].getSineValsPicture();
+				for(int j = 0; j < finalSineValsSound.length; j++) {
+					finalSineValsSound[j] += (valsSound[j]);
+				}
+				for(int j = 0; j < finalSineValsPicture.length; j++) {
+					finalSineValsPicture[j] += valsPicture[j];
 				}
 			}
-			dataChanged = true;
+			soundGenerator.setData(finalSineValsSound);
 			redrawWave();
 		}
+	}
+	
+	private JButton setupPlayButton() {
+		JButton play = new JButton("Start Playing");
+		play.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(play.getText().equals("Start Playing")) {
+					play.setText("Stop Playing");
+					(new Thread(soundGenerator)).start();
+				} else { 
+					play.setText("Start Playing");
+					soundGenerator.stopPlaying();
+				}
+			}
+			
+		});
+		return play;
 	}
 	
 	private JPanel setupSliders() {
@@ -83,7 +116,7 @@ public class Vibrato extends JFrame implements Runnable {
 		slidersSuperPanel.setPreferredSize(new Dimension(1500, 350));
 		JPanel slidersPanelOne = new JPanel();
 		slidersPanelOne.setLayout(new BoxLayout(slidersPanelOne, BoxLayout.Y_AXIS));
-		slidersPanelOne.add(new PlaySoundButton());
+		slidersPanelOne.add(setupPlayButton());
 		slidersPanelOne.add(setupFrequencySliders());
 		slidersPanelOne.add(setupHarmonicSliders());
 		JPanel slidersPanelTwo = new JPanel();
@@ -132,7 +165,7 @@ public class Vibrato extends JFrame implements Runnable {
 		JPanel vibratoFreqSliderPanel = new JPanel();
 		JLabel vibratoFreqVal = new JLabel("0");
 		vibratoFreqSliderPanel.add(new JLabel("Vibrato Frequency"));
-		vibratoFreqSliderPanel.add(new VibratoAmpSlider(vibratoFreqVal));
+		vibratoFreqSliderPanel.add(new VibratoFreqSlider(vibratoFreqVal));
 		vibratoFreqSliderPanel.add(vibratoFreqVal);
 		return vibratoFreqSliderPanel;
 	}
@@ -200,7 +233,12 @@ public class Vibrato extends JFrame implements Runnable {
 		
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new Vibrato();
+                try {
+					new Vibrato();
+				} catch (LineUnavailableException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
 	}
