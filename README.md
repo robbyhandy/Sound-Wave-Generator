@@ -1,1 +1,1 @@
-# Vibrato
+# Sound Wave Generator
