@@ -5,10 +5,11 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class WavePhaseSlider extends JSlider {
+public class FirstPhaseSlider extends JSlider {
+	
 	public static final int MULTIPLIER = 10000;
 	
-	public WavePhaseSlider(JLabel sliderValLabel, SineWave wave) {
+	public FirstPhaseSlider(JLabel sliderValLabel, SineWave wave) {
 		this.setMinimum(0 * MULTIPLIER);
 		this.setMaximum((int) (2 * Math.PI * MULTIPLIER));
 		this.setValue(0 * MULTIPLIER);
@@ -20,11 +21,12 @@ public class WavePhaseSlider extends JSlider {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				double val = ((WavePhaseSlider)e.getSource()).getValue() * 1.0 / MULTIPLIER;
+				double val = ((FirstPhaseSlider)e.getSource()).getValue() * 1.0 / MULTIPLIER;
 				sliderValLabel.setText(String.valueOf(val));
-				wave.setWavePhase(val);
+				wave.setFirstPhase(val);
 				wave.calcSineVals();
 			}
+			
 		});
 	}
 }

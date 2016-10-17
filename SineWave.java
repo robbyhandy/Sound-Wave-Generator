@@ -4,7 +4,7 @@ public class SineWave {
 
 	public static final int NUM_SINE_POINTS = 1000;
 	public static final int SAMPLE_RATE = 44100;
-	public static final double BUFFER_DURATION = .500;
+	public static final double BUFFER_DURATION = .100;
 	private static final double DT =  1.0 / SAMPLE_RATE;
 	
 	private static double FREQ = 220;
@@ -15,8 +15,8 @@ public class SineWave {
 	
 	private double harmonicNum;
 	private double harmonicAmp;
-	private double wavePhase;
-	private double vibratoPhase;
+	private double secondPhase;
+	private double firstPhase;
 	private volatile double[] sineValsSound;
 	private double[] sineValsPicture;
 
@@ -24,8 +24,8 @@ public class SineWave {
 		sineValsSound = new double[(int) (SAMPLE_RATE * BUFFER_DURATION)];
 		sineValsPicture = new double[NUM_SINE_POINTS];
 		harmonicAmp = 1.0;
-		wavePhase = 0.0;
-		vibratoPhase = 0.0;
+		secondPhase = 0.0;
+		firstPhase = 0.0;
 		this.harmonicNum = harmonicNum;
 		calcSineVals();
 	}
@@ -38,22 +38,23 @@ public class SineWave {
 		System.out.println("TREMOLO_FREQ: " + TREMOLO_FREQ);
 		System.out.println(harmonicNum);
 		System.out.println(harmonicAmp);
-		System.out.println(wavePhase);
-		System.out.println(vibratoPhase);
+		System.out.println(secondPhase);
+		System.out.println(firstPhase);
 		
 //		for(int i = 1; i <= NUM_SINE_POINTS; i++) {
 //			sineVals[i - 1] = 10 * (1 - TREMOLO_AMP * Math.sin(2 * Math.PI * TREMOLO_FREQ * i / NUM_SINE_POINTS)) * 
 //							(harmonicAmp * Math.sin(2 * Math.PI * harmonicNum * i * FREQ / NUM_SINE_POINTS + 
-//									(VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ * i / NUM_SINE_POINTS + vibratoPhase)) + wavePhase));
+//									(VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ * i / NUM_SINE_POINTS + firstPhase)) + secondPhase));
 //		}
 		
 		for(int i = 0; i < NUM_SINE_POINTS; i++) {
-			sineValsPicture[i] = 18 * (1 - TREMOLO_AMP * Math.sin(2 * Math.PI * TREMOLO_FREQ * i / NUM_SINE_POINTS)) * harmonicAmp * Math.sin(2 * Math.PI * 2 * harmonicNum * i / NUM_SINE_POINTS + wavePhase + (VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ * i / NUM_SINE_POINTS + vibratoPhase)));
+			sineValsPicture[i] = 18 * (1 - TREMOLO_AMP * Math.sin(2 * Math.PI * TREMOLO_FREQ / FREQ * i / NUM_SINE_POINTS*20)) * harmonicAmp * Math.sin(2 * Math.PI * 2 * harmonicNum * i / NUM_SINE_POINTS*20 + secondPhase + (VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ / FREQ * i / NUM_SINE_POINTS*20 + firstPhase)));
 //			System.out.println(sineVals[i]);
 		}
+		System.out.println(harmonicNum);
+
 		for(int i = 0; i < sineValsSound.length; i++) {
-//			sineValsSound[i] = 1.0 / 70 / 4 *Short.MAX_VALUE * (Math.sin(2 * Math.PI * 440 * i / 44100) + Math.sin(2 * Math.PI * 440 * 2 * i / 44100));
-			sineValsSound[i] = (1 - TREMOLO_AMP * Math.sin(2 * Math.PI * TREMOLO_FREQ * i / sineValsSound.length)) * harmonicAmp * Math.sin(2 * Math.PI * harmonicNum * FREQ * i / sineValsSound.length + wavePhase + (VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ * i / sineValsSound.length + vibratoPhase)));
+			sineValsSound[i] = (1 - TREMOLO_AMP * Math.sin(2 * Math.PI * TREMOLO_FREQ * i / sineValsSound.length)) * harmonicAmp * Math.sin(Math.PI * harmonicNum * FREQ * i / sineValsSound.length + secondPhase + (VIBRATO_AMP * Math.sin(2 * Math.PI * VIBRATO_FREQ * i / sineValsSound.length + firstPhase)));
 		}
 
 		Vibrato.calcFinalSineVals();
@@ -103,20 +104,20 @@ public class SineWave {
 		return harmonicNum;
 	}
 	
-	public synchronized void setVibratoPhase(double phase) {
-		vibratoPhase = phase;
+	public synchronized void setFirstPhase(double phase) {
+		firstPhase = phase;
 	}
 	
-	public synchronized double getVibratoPhase() {
-		return vibratoPhase;
+	public synchronized double getFirstPhase() {
+		return firstPhase;
 	}
 	
-	public synchronized void setWavePhase(double phase) {
-		wavePhase = phase;
+	public synchronized void setSecondPhase(double phase) {
+		secondPhase = phase;
 	}
 	
-	public synchronized double getWavePhase() {
-		return wavePhase;
+	public synchronized double getSecondPhase() {
+		return secondPhase;
 	}
 	
 	public synchronized static void setTremoloAmp(double amp) {

@@ -121,14 +121,14 @@ public class Vibrato extends JFrame implements Runnable {
 		slidersPanelOne.add(setupHarmonicSliders());
 		JPanel slidersPanelTwo = new JPanel();
 		slidersPanelTwo.setLayout(new BoxLayout(slidersPanelTwo, BoxLayout.Y_AXIS));
-		slidersPanelTwo.add(setupVibratoFreqSliders());
 		slidersPanelTwo.add(setupVibratoAmpSliders());
-		slidersPanelTwo.add(setupVibratoPhaseSliders());
+		slidersPanelTwo.add(setupVibratoFreqSliders());
+		slidersPanelTwo.add(setupFirstPhaseSliders());
 		JPanel slidersPanelThree = new JPanel();
 		slidersPanelThree.setLayout(new BoxLayout(slidersPanelThree, BoxLayout.Y_AXIS));
 		slidersPanelThree.add(setupTremoloAmpSliders());
 		slidersPanelThree.add(setupTremoloFreqSliders());
-		slidersPanelThree.add(setupWavePhaseSliders());
+		slidersPanelThree.add(setupSecondPhaseSliders());
 		slidersSuperPanel.add(slidersPanelOne);
 		slidersSuperPanel.add(slidersPanelTwo);
 		slidersSuperPanel.add(slidersPanelThree);
@@ -179,20 +179,20 @@ public class Vibrato extends JFrame implements Runnable {
 		return vibratoAmpSliderPanel;
 	}
 	
-	private JPanel setupVibratoPhaseSliders() {
-		JPanel vibratoPhaseSuperPanel = new JPanel();
-		vibratoPhaseSuperPanel.setLayout(new BoxLayout(vibratoPhaseSuperPanel, BoxLayout.Y_AXIS));
+	private JPanel setupFirstPhaseSliders() {
+		JPanel firstPhaseSuperPanel = new JPanel();
+		firstPhaseSuperPanel.setLayout(new BoxLayout(firstPhaseSuperPanel, BoxLayout.Y_AXIS));
 		for(int i = 0; i < NUM_WAVES; i++) {
-			JPanel vibratoPhasePanel = new JPanel();
-			vibratoPhasePanel.setLayout(new BoxLayout(vibratoPhasePanel, BoxLayout.X_AXIS));
-			vibratoPhasePanel.add(Box.createRigidArea(new Dimension(0,-15)));
-			JLabel vibratoPhaseVal = new JLabel("0");
-			vibratoPhasePanel.add(new JLabel("Vibrato Phase - n = " + (i + 1)));
-			vibratoPhasePanel.add(new VibratoPhaseSlider(vibratoPhaseVal, sineWaves[i]));
-			vibratoPhasePanel.add(vibratoPhaseVal);
-			vibratoPhaseSuperPanel.add(vibratoPhasePanel);
+			JPanel firstPhasePanel = new JPanel();
+			firstPhasePanel.setLayout(new BoxLayout(firstPhasePanel, BoxLayout.X_AXIS));
+			firstPhasePanel.add(Box.createRigidArea(new Dimension(0,-15)));
+			JLabel FirstPhaseVal = new JLabel("0");
+			firstPhasePanel.add(new JLabel("First Phase - n = " + (i + 1)));
+			firstPhasePanel.add(new FirstPhaseSlider(FirstPhaseVal, sineWaves[i]));
+			firstPhasePanel.add(FirstPhaseVal);
+			firstPhaseSuperPanel.add(firstPhasePanel);
 		}
-		return vibratoPhaseSuperPanel;
+		return firstPhaseSuperPanel;
 	}
 	
 	private JPanel setupTremoloAmpSliders() {
@@ -213,20 +213,20 @@ public class Vibrato extends JFrame implements Runnable {
 		return tremoloFreqSliderPanel;
 	}
 	
-	private JPanel setupWavePhaseSliders() {
-		JPanel wavePhaseSuperPanel = new JPanel();
-		wavePhaseSuperPanel.setLayout(new BoxLayout(wavePhaseSuperPanel, BoxLayout.Y_AXIS));
+	private JPanel setupSecondPhaseSliders() {
+		JPanel secondPhaseSuperPanel = new JPanel();
+		secondPhaseSuperPanel.setLayout(new BoxLayout(secondPhaseSuperPanel, BoxLayout.Y_AXIS));
 		for(int i = 0; i < NUM_WAVES; i++) {
-			JPanel wavePhasePanel = new JPanel();
-			wavePhasePanel.setLayout(new BoxLayout(wavePhasePanel, BoxLayout.X_AXIS));
-			wavePhasePanel.add(Box.createRigidArea(new Dimension(0,-15)));
-			JLabel wavePhaseVal = new JLabel("0");
-			wavePhasePanel.add(new JLabel("Wave Phase - n = " + (i + 1)));
-			wavePhasePanel.add(new WavePhaseSlider(wavePhaseVal, sineWaves[i]));
-			wavePhasePanel.add(wavePhaseVal);
-			wavePhaseSuperPanel.add(wavePhasePanel);
+			JPanel secondPhasePanel = new JPanel();
+			secondPhasePanel.setLayout(new BoxLayout(secondPhasePanel, BoxLayout.X_AXIS));
+			secondPhasePanel.add(Box.createRigidArea(new Dimension(0,-15)));
+			JLabel secondPhaseVal = new JLabel("0");
+			secondPhasePanel.add(new JLabel("Second Phase - n = " + (i + 1)));
+			secondPhasePanel.add(new SecondPhaseSlider(secondPhaseVal, sineWaves[i]));
+			secondPhasePanel.add(secondPhaseVal);
+			secondPhaseSuperPanel.add(secondPhasePanel);
 		}
-		return wavePhaseSuperPanel;
+		return secondPhaseSuperPanel;
 	}
 	
 	public static void main(String[] args) {

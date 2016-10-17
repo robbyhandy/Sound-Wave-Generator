@@ -11,7 +11,7 @@ public class SoundGenerator implements Runnable {
 	private static final int SAMPLE_RATE = 44100;
 	private static final int SAMPLE_SIZE = 2;
 	private static final int BITS = 16;
-	private static final double BUFFER_DURATION = 0.500;
+	private static final double BUFFER_DURATION = 0.100;
 	private static final int SINE_PACKET_SIZE = (int) (SAMPLE_RATE * SAMPLE_SIZE * BUFFER_DURATION);
 	
 	private SourceDataLine line;
@@ -101,7 +101,7 @@ public class SoundGenerator implements Runnable {
           cBuf.clear();                             //Toss out samples from previous pass
 
           //Generate SINE_PACKET_SIZE samples based on the current fCycleInc from fFreq
-          for (int i=0; i < SINE_PACKET_SIZE/SAMPLE_SIZE; i++) {
+          for (int i=0; i < data.length; i++) {
 //             cBuf.putShort((short)(Short.MAX_VALUE * Math.sin(2 * Math.PI * fCyclePosition)));
         	  cBuf.putShort((short)(1000 * data[i]));
 //             fCyclePosition += fCycleInc;
@@ -160,7 +160,7 @@ public class SoundGenerator implements Runnable {
 //	}
 //	
 	public void setData(double[] data) {
-		this.data = data;
+		this.data = data.clone();
 	}
 	
 	public void stopPlaying() {
